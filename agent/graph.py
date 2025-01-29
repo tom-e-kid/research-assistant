@@ -13,6 +13,7 @@ from agent.analysts import (
 from agent.interview import interview_builder
 from agent.report import (
   finalize_report,
+  translate_report,
   write_conclusion,
   write_introduction,
   write_report,
@@ -56,6 +57,7 @@ builder.add_node("write_report", write_report)
 builder.add_node("write_introduction", write_introduction)
 builder.add_node("write_conclusion", write_conclusion)
 builder.add_node("finalize_report", finalize_report)
+builder.add_node("translate_report", translate_report)
 
 # add edges
 builder.add_edge(START, "create_analysts")
@@ -71,7 +73,8 @@ builder.add_edge("conduct_interview", "write_conclusion")
 builder.add_edge(
   ["write_report", "write_introduction", "write_conclusion"], "finalize_report"
 )
-builder.add_edge("finalize_report", END)
+builder.add_edge("finalize_report", "translate_report")
+builder.add_edge("translate_report", END)
 
 memory = MemorySaver()
 graph = builder.compile(interrupt_before=["human_feedback"], checkpointer=memory)

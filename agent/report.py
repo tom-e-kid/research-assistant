@@ -134,3 +134,41 @@ def finalize_report(state: ResearchGraphState):
     report += "\n\n## Sources\n" + sources
 
   return {"final_report": report}
+
+
+translate_instruction = """\
+You are a professional translator.  
+Your task is to translate the provided report into the appropriate target language.  
+
+**Translation Rules:**  
+- Determine the appropriate target language based on the topic provided by the user.  
+  - If the target language is unclear, default to **English**.  
+- **Output only the translated text. Do not include any extra commentary or explanations.**  
+- **Use natural and clear expressions in the target language, avoiding literal translations that may sound unnatural.**  
+- **For technical terms or specialized vocabulary, use the most appropriate equivalent in the target language.**  
+- **Ensure that the translation accurately conveys the original meaning while maintaining readability.**  
+
+"""
+
+user_prompt = """\
+Please translate the following report into the appropriate language.
+
+**Topic:** {topic}  
+**Report:**  
+{report}
+
+"""
+
+
+def translate_report(state: ResearchGraphState):
+  """Translate the report into Japanese."""
+
+  prompt = ChatPromptTemplate.from_messages(
+    [
+      ("system", translate_instruction),
+      ("human", user_prompt),
+    ]
+  )
+  chain = prompt | llm
+  output = chain.invoke({"topic": state.topic, "report": state.final_report})
+  return {"translated_report": output.content}

@@ -18,3 +18,4 @@ class ResearchGraphState(BaseModel):
   content: str = Field("", description="Content for the final report")
   conclusion: str = Field("", description="Conclusion for the final report")
   final_report: str = Field("", description="Final report")
+  translated_report: str = Field("", description="Translated report")
