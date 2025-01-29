@@ -1,9 +1,7 @@
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
-from langgraph.graph import END
 from pydantic import BaseModel, Field
 
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+from agent.api import llm
 
 
 class Analyst(BaseModel):
@@ -31,9 +29,9 @@ class Perspectives(BaseModel):
 
 
 class GenerateAnalystsState(BaseModel):
-  topic: str = Field(description="Research topic.")
-  max_analysts: int = Field(description="Maximum number of analysts to generate.")
-  human_feedback: str = Field(
+  topic: str = Field(..., description="Research topic.")
+  max_analysts: int = Field(2, description="Maximum number of analysts to generate.")
+  human_feedback_for_analysts: str = Field(
     description="Human feedback on the generated analysts.", default=""
   )
   analysts: list[Analyst] = Field(
@@ -50,7 +48,7 @@ Follow these instructions carefully:
         
 2. Examine any editorial feedback that has been optionally provided to guide creation of the analysts: 
         
-{human_feedback}
+{human_feedback_for_analysts}
     
 3. Determine the most interesting themes based upon documents and / or feedback above.
                     
@@ -77,20 +75,12 @@ def generate_analysts(state: GenerateAnalystsState):
     {
       "topic": state.topic,
       "max_analysts": state.max_analysts,
-      "human_feedback": state.human_feedback,
+      "human_feedback_for_analysts": state.human_feedback_for_analysts,
     }
   )
   return {"analysts": perspectives.analysts}  # type: ignore
 
 
-def get_human_feedback(state: GenerateAnalystsState):
+def human_feedback(state: GenerateAnalystsState):
   """No-op node for human feedback."""
   pass
-
-
-def should_continue(state: GenerateAnalystsState):
-  """Return the next node to run."""
-  feedback = state.human_feedback or None
-  if feedback:
-    return "generate_analysts"
-  return END
