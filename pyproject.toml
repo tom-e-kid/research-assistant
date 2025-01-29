@@ -5,9 +5,12 @@ description = "Very basic assistant with LangGraph"
 requires-python = ">=3.11"
 dependencies = [
     "langchain>=0.3.13",
+    "langchain-community>=0.3.16",
     "langchain-openai>=0.2.14",
     "langgraph>=0.2.60",
     "python-dotenv>=1.0.1",
+    "tavily-python>=0.5.0",
+    "wikipedia>=1.4.0",
 ]
 
 [dependency-groups]
