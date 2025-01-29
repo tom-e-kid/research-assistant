@@ -1,0 +1,23 @@
+[project]
+name = "research-assistant"
+version = "0.1.0"
+description = "Very basic assistant with LangGraph"
+requires-python = ">=3.11"
+dependencies = [
+    "langchain>=0.3.13",
+    "langchain-openai>=0.2.14",
+    "langgraph>=0.2.60",
+    "python-dotenv>=1.0.1",
+]
+
+[dependency-groups]
+dev = [
+    "grandalf>=0.8",
+    "ruff>=0.8.4",
+]
+
+[tool.ruff]
+indent-width = 2
+line-length = 88
+select = ["E", "F", "I", "B", "C4", "UP"]
+ignore = ["E402"]
